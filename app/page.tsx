@@ -1,20 +1,27 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 
 export default function Home() {
   const [isRetrograde, setIsRetrograde] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function checkMercuryRetrograde() {
       try {
         const response = await fetch('/api/mercury');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
         const data = await response.json();
         setIsRetrograde(data.isRetrograde);
+        setError(null);
       } catch (error) {
-        console.error('获取水星逆行数据失败:', error);
+        console.error('Failed to fetch Mercury retrograde data:', error);
+        setError('Unable to check if Mercury is in retrograde. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -31,33 +38,25 @@ export default function Home() {
         </h1>
         
         {loading ? (
-          <motion.div 
-            className="text-pink-500 text-xl"
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-          >
+          <div className="text-pink-500 text-xl animate-pulse">
             正在查询中...
-          </motion.div>
+          </div>
+        ) : error ? (
+          <div className="text-red-500 text-xl">
+            {error}
+          </div>
         ) : (
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-col items-center"
-          >
-            <motion.div 
-              className={`text-8xl font-bold mb-4 ${isRetrograde ? 'text-red-500' : 'text-green-500'}`}
-              whileHover={{ scale: 1.1 }}
-            >
+          <div className="flex flex-col items-center">
+            <div className={`text-8xl font-bold mb-4 ${isRetrograde ? 'text-red-500' : 'text-green-500'}`}>
               {isRetrograde ? 'YES' : 'NO'}
-            </motion.div>
+            </div>
             
             <p className="text-xl text-pink-700 mt-4">
               {isRetrograde 
                 ? '水星正在逆行，请小心沟通和旅行计划！' 
                 : '水星不在逆行，可以放心进行重要决策。'}
             </p>
-          </motion.div>
+          </div>
         )}
         
         <div className="mt-16 text-pink-400 text-sm">

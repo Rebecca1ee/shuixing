@@ -9,11 +9,11 @@ module.exports = {
     extend: {
       colors: {
         pink: {
-          100: '#FFF0F5', // 浅粉色背景
-          400: '#FFA6C9', // 中等粉色
-          500: '#FF85A2', // 主粉色
-          600: '#FF6B88', // 深粉色
-          700: '#FF4D6D', // 更深粉色
+          100: '#FFF0F5', // Light pink background
+          400: '#FFA6C9', // Medium pink
+          500: '#FF85A2', // Main pink
+          600: '#FF6B88', // Deep pink
+          700: '#FF4D6D', // Deeper pink
         },
       },
     },
